@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="บทที่ 1 ทฤษฎีอะตอมและไฟฟ้าเบื้องต้น - เรียนรู้ส่วนประกอบของอะตอม การเกิดกระแสไฟฟ้า และความหมายของแรงดันไฟฟ้าและกระแสไฟฟ้า">
+  <title>บทที่ 1 ทฤษฎีอะตอม | อิเล็กทรอนิกส์เบื้องต้น | WBI</title>
+  <link rel="stylesheet" href="../../../assets/style.css">
+</head>
+<body>
+
+  <!-- ===== Header ===== -->
+  <header class="site-header" id="site-header" role="banner">
+    <div class="container">
+      <a href="../../../index.html" class="site-header__logo">⚡ WBI Electronics</a>
+    </div>
+  </header>
+
+  <!-- ===== Main Content ===== -->
+  <main id="main-content" role="main" class="lesson-page">
+    <div class="container-narrow">
+
+      <!-- Breadcrumb -->
+      <nav id="breadcrumb" aria-label="Breadcrumb">
+        <div class="breadcrumb">
+          <a href="../../../index.html">หน้าหลัก</a>
+          <span class="separator"></span>
+          <a href="../index.html">อิเล็กทรอนิกส์เบื้องต้น</a>
+          <span class="separator"></span>
+          <span class="current">บทที่ 1</span>
+        </div>
+      </nav>
+
+      <!-- Lesson Content -->
+      <article class="lesson-content mt-md">
+        <h1>บทที่ 1: ทฤษฎีอะตอมและไฟฟ้าเบื้องต้น</h1>
+        <p class="text-muted mb-xl">ปูพื้นฐานความเข้าใจเกี่ยวกับโครงสร้างของสสารและการเกิดไฟฟ้า ซึ่งเป็นหัวใจสำคัญของการศึกษาวิชาอิเล็กทรอนิกส์</p>
+
+        <div class="callout callout-info mb-xl">
+          <div class="callout__title">🎯 จุดประสงค์การเรียนรู้</div>
+          <ul>
+            <li>อธิบายโครงสร้างพื้นฐานของอะตอมได้</li>
+            <li>เข้าใจความแตกต่างระหว่างโปรตอน นิวตรอน และอิเล็กตรอน</li>
+            <li>อธิบายหลักการเกิดกระแสไฟฟ้าจากการเคลื่อนที่ของอิเล็กตรอนได้</li>
+            <li>แยกแยะความแตกต่างระหว่างตัวนำ ฉนวน และสารกึ่งตัวนำได้</li>
+          </ul>
+        </div>
+
+        <h2>1. โครงสร้างของสสารและอะตอม</h2>
+        <p>สสารทุกชนิดบนโลกประกอบขึ้นจากอนุภาคขนาดเล็กที่เรียกว่า <strong>อะตอม (Atom)</strong> ซึ่งเป็นหน่วยย่อยที่สุดที่ยังคงแสดงคุณสมบัติทางเคมีของธาตุนั้นๆ ภายในอะตอมประกอบด้วยอนุภาคมูลฐาน 3 ชนิด ได้แก่:</p>
+        
+        <ul>
+          <li><strong>โปรตอน (Proton)</strong> - มีประจุไฟฟ้าบวก (+) อยู่บริเวณใจกลางของอะตอม (นิวเคลียส)</li>
+          <li><strong>นิวตรอน (Neutron)</strong> - เป็นกลางทางไฟฟ้า (ไม่มีประจุ) อยู่รวมกับโปรตอนในนิวเคลียส</li>
+          <li><strong>อิเล็กตรอน (Electron)</strong> - มีประจุไฟฟ้าลบ (-) วิ่งวนรอบนิวเคลียสเป็นชั้นๆ หรือเชลล์ (Shell)</li>
+        </ul>
+
+        <div class="callout callout-tip">
+          <div class="callout__title">💡 เกร็ดความรู้</div>
+          <p>อิเล็กตรอนที่อยู่วงนอกสุดเรียกว่า <strong>เวเลนซ์อิเล็กตรอน (Valence Electron)</strong> ซึ่งมีบทบาทสำคัญมากในการกำหนดคุณสมบัติทางไฟฟ้าของสสาร ว่าจะเป็นตัวนำ ฉนวน หรือสารกึ่งตัวนำ</p>
+        </div>
+
+        <hr class="section-divider">
+
+        <h2>2. การแบ่งประเภทของสสารทางไฟฟ้า</h2>
+        <p>จากจำนวนเวเลนซ์อิเล็กตรอน เราสามารถแบ่งคุณสมบัติทางไฟฟ้าของวัสดุออกเป็น 3 ประเภทหลัก:</p>
+
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>ประเภท</th>
+                <th>จำนวนเวเลนซ์อิเล็กตรอน</th>
+                <th>คุณสมบัติและการนำไฟฟ้า</th>
+                <th>ตัวอย่างวัสดุ</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>ตัวนำไฟฟ้า (Conductor)</strong></td>
+                <td>1 ถึง 3 ตัว</td>
+                <td>อิเล็กตรอนหลุดจากวงโคจรได้ง่าย นำไฟฟ้าได้ดีมาก</td>
+                <td>ทองแดง, เงิน, ทอง, อลูมิเนียม</td>
+              </tr>
+              <tr>
+                <td><strong>ฉนวนไฟฟ้า (Insulator)</strong></td>
+                <td>5 ถึง 8 ตัว</td>
+                <td>อิเล็กตรอนยึดเหนี่ยวแน่นหนา ไม่ยอมให้นำไฟฟ้า</td>
+                <td>ยาง, พลาสติก, แก้ว, ไม้แห้ง</td>
+              </tr>
+              <tr>
+                <td><strong>สารกึ่งตัวนำ (Semiconductor)</strong></td>
+                <td>4 ตัว พอดี</td>
+                <td>นำไฟฟ้าได้ไม่ดีที่อุณหภูมิห้อง แต่นำได้ดีขึ้นเมื่อให้ความร้อนหรือเจือสารอื่น</td>
+                <td>ซิลิกอน (Si), เจอร์เมเนียม (Ge)</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <hr class="section-divider">
+
+        <h2>3. การเกิดกระแสไฟฟ้า</h2>
+        <p>กระแสไฟฟ้าเกิดขึ้นจากการเคลื่อนที่ของ <strong>อิเล็กตรอนอิสระ</strong> ไปในทิศทางเดียวกัน เมื่อเราให้พลังงานจากภายนอก (เช่น จากแบตเตอรี่) อิเล็กตรอนจะถูกผลักออกจากขั้วลบ และถูกดึงดูดเข้าหาขั้วบวก</p>
+        
+        <p>ในทางอิเล็กทรอนิกส์และวงจรไฟฟ้า มีปริมาณที่สำคัญ 3 ตัวที่ต้องทำความเข้าใจ:</p>
+        <ol>
+          <li><strong>แรงดันไฟฟ้า (Voltage, V)</strong> - แรงผลักดันที่ทำให้อิเล็กตรอนเคลื่อนที่ มีหน่วยเป็น โวลต์ (Volt, V)</li>
+          <li><strong>กระแสไฟฟ้า (Current, I)</strong> - ปริมาณการไหลของอิเล็กตรอน มีหน่วยเป็น แอมแปร์ (Ampere, A)</li>
+          <li><strong>ความต้านทาน (Resistance, R)</strong> - การต่อต้านการไหลของกระแสไฟฟ้า มีหน่วยเป็น โอห์ม (Ohm, Ω)</li>
+        </ol>
+
+        <div class="formula">
+          <span class="label">กฎของโอห์ม (Ohm's Law)</span>
+          V = I × R
+        </div>
+
+        <hr class="section-divider">
+
+        <h2>สรุปเนื้อหา</h2>
+        <p>อะตอมประกอบด้วยโปรตอน นิวตรอน และอิเล็กตรอน โดยอิเล็กตรอนวงนอกสุดเป็นตัวกำหนดคุณสมบัติทางไฟฟ้า การไหลของอิเล็กตรอนในวัสดุตัวนำคือสิ่งที่ทำให้เกิด <strong>กระแสไฟฟ้า</strong> ซึ่งเกี่ยวข้องกับแรงดันไฟฟ้าและความต้านทานอย่างแยกไม่ออก วัสดุที่ใช้ในงานอิเล็กทรอนิกส์ส่วนใหญ่คือ <strong>สารกึ่งตัวนำ</strong> ซึ่งมีคุณสมบัติอยู่กึ่งกลางระหว่างตัวนำและฉนวน</p>
+
+        <!-- Lesson Navigation -->
+        <div class="lesson-nav">
+          <a href="../index.html" class="lesson-nav__link lesson-nav__link--prev">
+            <span class="lesson-nav__arrow">←</span>
+            <div>
+              <div class="lesson-nav__direction">ย้อนกลับ</div>
+              <div class="lesson-nav__title">กลับสู่หน้ารายวิชา</div>
+            </div>
+          </a>
+          <a href="quiz.html" class="lesson-nav__link lesson-nav__link--next btn-primary">
+            <div>
+              <div class="lesson-nav__direction">ขั้นตอนต่อไป</div>
+              <div class="lesson-nav__title">ทำแบบทดสอบ บทที่ 1</div>
+            </div>
+            <span class="lesson-nav__arrow" style="color:white;">→</span>
+          </a>
+        </div>
+
+      </article>
+    </div>
+  </main>
+
+  <!-- ===== Footer ===== -->
+  <footer class="site-footer" id="site-footer" role="contentinfo">
+    <div class="container">
+      <div class="footer-bottom">
+        <p>© 2026 WBI Electronics — สื่อการเรียนรู้สำหรับนักเรียนสาขาอิเล็กทรอนิกส์</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="../../../assets/main.js"></script>
+</body>
+</html>

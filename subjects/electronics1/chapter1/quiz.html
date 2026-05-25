@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="แบบทดสอบ บทที่ 1 ทฤษฎีอะตอมและไฟฟ้าเบื้องต้น">
+  <title>แบบทดสอบ บทที่ 1 | อิเล็กทรอนิกส์เบื้องต้น | WBI</title>
+  <link rel="stylesheet" href="../../../assets/style.css">
+</head>
+<body>
+
+  <!-- ===== Header ===== -->
+  <header class="site-header" id="site-header" role="banner">
+    <div class="container">
+      <a href="../../../index.html" class="site-header__logo">⚡ WBI Electronics</a>
+    </div>
+  </header>
+
+  <!-- ===== Main Content ===== -->
+  <main id="main-content" role="main" class="lesson-page">
+    <div class="container-narrow">
+
+      <!-- Breadcrumb -->
+      <nav id="breadcrumb" aria-label="Breadcrumb">
+        <div class="breadcrumb">
+          <a href="../../../index.html">หน้าหลัก</a>
+          <span class="separator"></span>
+          <a href="../index.html">อิเล็กทรอนิกส์เบื้องต้น</a>
+          <span class="separator"></span>
+          <a href="index.html">บทที่ 1</a>
+          <span class="separator"></span>
+          <span class="current">แบบทดสอบ</span>
+        </div>
+      </nav>
+
+      <div class="mt-lg">
+        <h1 class="mb-md">แบบทดสอบ: บทที่ 1 ทฤษฎีอะตอม</h1>
+        <p class="text-muted mb-xl">ทดสอบความเข้าใจเกี่ยวกับโครงสร้างอะตอม สสาร และพื้นฐานไฟฟ้า (จำนวน 5 ข้อ)</p>
+        
+        <!-- Quiz Container for JS Engine -->
+        <div id="quiz-container"></div>
+      </div>
+
+    </div>
+  </main>
+
+  <script src="../../../assets/main.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Initialize Quiz using the engine in main.js
+      if (typeof initQuiz === 'function') {
+        initQuiz({
+          containerId: 'quiz-container',
+          subject: 'electronics1',
+          chapter: 1,
+          questions: [
+            {
+              question: "ข้อใดคืออนุภาคที่อยู่ในนิวเคลียสของอะตอมทั้งหมด?",
+              options: [
+                "โปรตอน และ อิเล็กตรอน",
+                "โปรตอน และ นิวตรอน",
+                "นิวตรอน และ อิเล็กตรอน",
+                "เวเลนซ์อิเล็กตรอน และ โปรตอน"
+              ],
+              correct: 1,
+              explanation: "นิวเคลียสของอะตอมประกอบด้วยโปรตอน (ประจุบวก) และนิวตรอน (ไม่มีประจุ) ส่วนอิเล็กตรอนจะโคจรอยู่รอบนอก"
+            },
+            {
+              question: "อนุภาคใดที่สามารถหลุดออกจากอะตอมและทำให้เกิดกระแสไฟฟ้าได้?",
+              options: [
+                "โปรตอน",
+                "นิวตรอน",
+                "อิเล็กตรอน",
+                "นิวเคลียส"
+              ],
+              correct: 2,
+              explanation: "อิเล็กตรอน โดยเฉพาะเวเลนซ์อิเล็กตรอนที่อยู่วงนอกสุด สามารถหลุดจากวงโคจรและเคลื่อนที่ได้อย่างอิสระ ทำให้เกิดกระแสไฟฟ้า"
+            },
+            {
+              question: "วัสดุในข้อใดมีคุณสมบัติเป็นสารกึ่งตัวนำ (Semiconductor)?",
+              options: [
+                "ทองแดง",
+                "ยาง",
+                "ซิลิกอน",
+                "เงิน"
+              ],
+              correct: 2,
+              explanation: "ซิลิกอน (Si) เป็นสารกึ่งตัวนำที่มีเวเลนซ์อิเล็กตรอน 4 ตัว นิยมนำมาใช้ทำอุปกรณ์อิเล็กทรอนิกส์ เช่น ไดโอดและทรานซิสเตอร์"
+            },
+            {
+              question: "เวเลนซ์อิเล็กตรอน (Valence Electron) หมายถึงอะไร?",
+              options: [
+                "อิเล็กตรอนที่อยู่ใกล้นิวเคลียสมากที่สุด",
+                "อิเล็กตรอนที่อยู่วงโคจรชั้นนอกสุด",
+                "อิเล็กตรอนที่มีประจุบวก",
+                "อิเล็กตรอนที่รวมอยู่กับโปรตอน"
+              ],
+              correct: 1,
+              explanation: "เวเลนซ์อิเล็กตรอน คือ อิเล็กตรอนที่อยู่ในชั้นเชลล์นอกสุดของอะตอม ซึ่งมีผลต่อคุณสมบัติการนำไฟฟ้า"
+            },
+            {
+              question: "หน่วยวัดของ 'แรงดันไฟฟ้า' คือข้อใด?",
+              options: [
+                "แอมแปร์ (Ampere)",
+                "โอห์ม (Ohm)",
+                "โวลต์ (Volt)",
+                "วัตต์ (Watt)"
+              ],
+              correct: 2,
+              explanation: "แรงดันไฟฟ้า (Voltage) มีหน่วยวัดเป็น โวลต์ (Volt) ส่วนกระแสไฟฟ้ามีหน่วยเป็น แอมแปร์ และความต้านทานมีหน่วยเป็น โอห์ม"
+            }
+          ]
+        });
+      }
+    });
+  </script>
+</body>
+</html>
