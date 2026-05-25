@@ -17,7 +17,10 @@ my-electronics-wbi/          ← repo root
 ├── index.html               ← home page: subject selection cards
 ├── assets/
 │   ├── style.css            ← global styles (edit only this file)
-│   └── main.js              ← shared functions: quiz engine, navigation
+│   ├── main.js              ← shared functions: quiz engine, navigation
+│   └── images/              ← image storage
+│       └── [subject-id]/
+│           └── chapter[N]/  ← images for specific lessons
 ├── subjects/
 │   └── [subject-id]/        ← e.g. electronics1
 │       ├── index.html       ← subject page: chapter list
@@ -59,6 +62,32 @@ https://[username].github.io/[repo]/subjects/electronics1/chapter1/sim.html
 | interface-techniques | เทคนิคการอินเตอร์เฟซ | — |
 
 *(add a row each time a new subject is created)*
+
+---
+
+## Image Management
+
+### Folder Structure & Naming
+- **Path**: `assets/images/[subject-id]/chapter[N]/[filename].[ext]`
+- **Naming**: Lowercase, hyphens only, no Thai characters (e.g., `logic-gate-01.png`)
+
+### Image Requirements
+- **Max File Size**: 500KB per image (prefer 100-300KB)
+- **Dimensions**: Width between 800px and 1200px
+- **Formats**: 
+  - `.jpg` for photos/realistic images
+  - `.png` for graphics/icons/transparent backgrounds
+  - `.svg` for diagrams/schematics (best for clarity)
+
+### AI Responsibility
+- **Optimization**: If a provided image is too large (> 1MB), the AI must attempt to resize or optimize it (target ~1000px width, < 500KB) before saving it to the repository.
+- **HTML Implementation**: Use `<figure>` and `<figcaption>` for captioned images:
+  ```html
+  <figure class="content-image">
+    <img src="../../../assets/images/electronics1/chapter1/diagram.png" alt="Description">
+    <figcaption>รูปที่ X.X แสดง...</figcaption>
+  </figure>
+  ```
 
 ---
 

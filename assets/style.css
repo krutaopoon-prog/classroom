@@ -708,6 +708,26 @@ p:last-child { margin-bottom: 0; }
   border-radius: var(--radius-md);
   margin: var(--space-lg) auto;
   box-shadow: var(--shadow-md);
+  display: block;
+}
+
+/* Image with Caption */
+.content-image {
+  margin: var(--space-xl) 0;
+  text-align: center;
+}
+
+.content-image img {
+  margin-bottom: var(--space-sm);
+  display: inline-block;
+  border: 1px solid var(--border-color);
+}
+
+.content-image figcaption {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  font-style: italic;
+  padding: 0 var(--space-md);
 }
 
 .lesson-content a {
