@@ -34,21 +34,158 @@
       <!-- Lesson Content -->
       <article class="lesson-content mt-md">
         <h1>หน่วยที่ 1: งานเลือกใช้ไมโครคอนโทรลเลอร์</h1>
-        <p class="text-muted mb-xl">การคัดเลือกและวิเคราะห์คุณสมบัติของไมโครคอนโทรลเลอร์เพื่อนำมาประยุกต์ใช้งานในระบบอินเตอร์เฟซ</p>
+        <p class="text-muted mb-xl">การคัดเลือกและวิเคราะห์คุณสมบัติของไมโครคอนโทรลเลอร์เพื่อนำมาประยุกต์ใช้งานในระบบอินเตอร์เฟซได้อย่างมืออาชีพ</p>
 
         <div class="callout callout-info mb-xl">
           <div class="callout__title">🎯 จุดประสงค์การเรียนรู้</div>
           <ul>
-            <li>อธิบายสถาปัตยกรรมพื้นฐานของไมโครคอนโทรลเลอร์ได้</li>
-            <li>เปรียบเทียบคุณสมบัติของไมโครคอนโทรลเลอร์ตระกูลต่างๆ ได้</li>
-            <li>เลือกใช้ไมโครคอนโทรลเลอร์ได้เหมาะสมกับลักษณะงาน</li>
+            <li>อธิบายสถาปัตยกรรมและองค์ประกอบพื้นฐานของไมโครคอนโทรลเลอร์ได้</li>
+            <li>เปรียบเทียบข้อดีและข้อจำกัดของไมโครคอนโทรลเลอร์ตระกูลต่างๆ ได้</li>
+            <li>วิเคราะห์ความต้องการของงานด้านสมองกลฝังตัวได้</li>
+            <li>สืบค้นข้อมูลจาก Datasheet และเลือกใช้ไมโครคอนโทรลเลอร์ได้เหมาะสมกับลักษณะงาน</li>
           </ul>
         </div>
 
-        <h2>เนื้อหาบทเรียน</h2>
-        <p>กำลังเตรียมเนื้อหาในส่วนนี้...</p>
+        <section id="section-1">
+          <h2>1. ความรู้เบื้องต้นเกี่ยวกับไมโครคอนโทรลเลอร์</h2>
+          <p>ไมโครคอนโทรลเลอร์ (Microcontroller) เปรียบเสมือนคอมพิวเตอร์ขนาดเล็กที่รวมทุกอย่างไว้ในชิปเดียว เพื่อใช้ในการควบคุมอุปกรณ์หรือระบบต่างๆ</p>
+          
+          <h3>1.1 ชนิดและตระกูลที่นิยมใช้งานในปัจจุบัน</h3>
+          <div class="card-grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--space-md); padding: var(--space-md) 0;">
+            <div class="card" style="padding: var(--space-md); border-top: 4px solid var(--primary);">
+              <h4 class="text-primary">AVR Family</h4>
+              <p class="text-small">เช่น ATmega328P (Arduino Uno) ยอดนิยมสำหรับผู้เริ่มต้น ใช้งานง่าย ไลบรารีเยอะ</p>
+            </div>
+            <div class="card" style="padding: var(--space-md); border-top: 4px solid var(--accent);">
+              <h4 class="text-accent">PIC Family</h4>
+              <p class="text-small">จาก Microchip มีความทนทานสูง หลากหลายรุ่น เหมาะกับงานอุตสาหกรรม</p>
+            </div>
+            <div class="card" style="padding: var(--space-md); border-top: 4px solid var(--success);">
+              <h4 class="text-success">ARM Cortex-M</h4>
+              <p class="text-small">เช่น STM32, RP2040 ประสิทธิภาพสูง 32-bit เหมาะกับงานที่ต้องการพลังประมวลผล</p>
+            </div>
+            <div class="card" style="padding: var(--space-md); border-top: 4px solid var(--info);">
+              <h4 class="text-info">Wireless SoCs</h4>
+              <p class="text-small">เช่น ESP8266, ESP32 มี Wi-Fi/Bluetooth ในตัว เหมาะมากสำหรับงาน IoT</p>
+            </div>
+          </div>
+
+          <h3>1.2 คุณสมบัติหลักและองค์ประกอบสำคัญ</h3>
+          <ul>
+            <li><strong>CPU:</strong> หน่วยประมวลผล (8-bit, 16-bit, 32-bit)</li>
+            <li><strong>Memory:</strong> 
+              <ul>
+                <li>Flash (เก็บโปรแกรม)</li>
+                <li>RAM (เก็บข้อมูลชั่วคราว)</li>
+                <li>EEPROM (เก็บข้อมูลถาวรขนาดเล็ก)</li>
+              </ul>
+            </li>
+            <li><strong>I/O Ports:</strong> Digital I/O, ADC (แอนะล็อก), PWM</li>
+            <li><strong>Peripherals:</strong> UART, SPI, I2C, Timer/Counter</li>
+          </ul>
+        </section>
 
         <hr class="section-divider">
+
+        <section id="section-2">
+          <h2>2. หลักการและขั้นตอนในการเลือกใช้</h2>
+          
+          <h3>2.1 การวิเคราะห์ความต้องการของงาน (Requirement Analysis)</h3>
+          <div class="callout callout-tip">
+            <div class="callout__title">💡 ปัจจัยที่ต้องพิจารณา</div>
+            <ul>
+              <li><strong>วัตถุประสงค์:</strong> งานคืออะไร? (ควบคุม simple ON/OFF หรือประมวลผลภาพ)</li>
+              <li><strong>I/O:</strong> ต้องการใช้ขากี่ขา? ต่อเซนเซอร์อะไรบ้าง?</li>
+              <li><strong>พลังงาน:</strong> ใช้แบตเตอรี่หรือไม่? (ต้องการ Low Power หรือไม่)</li>
+              <li><strong>การสื่อสาร:</strong> ต้องต่อ Wi-Fi หรือส่งข้อมูลผ่าน Serial หรือเปล่า?</li>
+              <li><strong>งบประมาณ:</strong> ต้นทุนต่อชิ้นต้องไม่เกินเท่าไหร่?</li>
+            </ul>
+          </div>
+
+          <h3>2.2 เกณฑ์การคัดเลือก</h3>
+          <p>คือการนำคุณสมบัติที่มีในชิป มาจับคู่กับความต้องการที่เราวิเคราะห์ไว้ โดยพิจารณาความสมดุลระหว่าง <strong>ประสิทธิภาพ ราคา และความง่ายในการพัฒนา</strong></p>
+        </section>
+
+        <hr class="section-divider">
+
+        <section id="section-3">
+          <h2>3. การสืบค้นและเปรียบเทียบข้อมูล</h2>
+          
+          <h3>3.1 การอ่าน Datasheet</h3>
+          <p><strong>Datasheet</strong> คือคัมภีร์ของผู้พัฒนา หัวข้อสำคัญที่ต้องดูคือ:</p>
+          <ul>
+            <li>Pin Configuration (ขาไหนทำหน้าที่อะไร)</li>
+            <li>Electrical Characteristics (ใช้ไฟกี่โวลต์ กินกระแสเท่าไหร่)</li>
+            <li>Memory Map (มีพื้นที่เก็บโปรแกรมพอไหม)</li>
+          </ul>
+
+          <h3>3.2 การเปรียบเทียบข้อมูล (Comparison)</h3>
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>คุณสมบัติ</th>
+                  <th>ATmega328P</th>
+                  <th>ESP32</th>
+                  <th>STM32F103</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Bit-width</td>
+                  <td>8-bit</td>
+                  <td>32-bit</td>
+                  <td>32-bit</td>
+                </tr>
+                <tr>
+                  <td>Speed</td>
+                  <td>16-20 MHz</td>
+                  <td>Up to 240 MHz</td>
+                  <td>72 MHz</td>
+                </tr>
+                <tr>
+                  <td>Wireless</td>
+                  <td>ไม่มี</td>
+                  <td>Wi-Fi & BT</td>
+                  <td>ไม่มี</td>
+                </tr>
+                <tr>
+                  <td>จุดเด่น</td>
+                  <td>ใช้ง่าย ทนทาน</td>
+                  <td>IoT แรงสูง</td>
+                  <td>งานอุตสาหกรรม</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <hr class="section-divider">
+
+        <section id="section-4">
+          <h2>4. การตัดสินใจเลือกใช้</h2>
+          <p>เมื่อได้ข้อมูลครบถ้วนแล้ว ให้ตัดสินใจโดยพิจารณาปัจจัยเสริม เช่น:</p>
+          <ul>
+            <li><strong>ความคุ้นเคย:</strong> ทีมงานมีความเชี่ยวชาญเครื่องมือตัวไหน?</li>
+            <li><strong>Library:</strong> มีโค้ดตัวอย่างหรือไลบรารีสนับสนุนเยอะไหม?</li>
+            <li><strong>Availability:</strong> หาซื้อได้ง่ายหรือไม่ในระยะยาว?</li>
+          </ul>
+        </section>
+
+        <hr class="section-divider">
+
+        <section id="section-5">
+          <h2>5. การแลกเปลี่ยนความคิดเห็น</h2>
+          <div class="callout callout-warning">
+            <div class="callout__title">🗣️ กิจกรรมกลุ่ม</div>
+            <p>ให้นักเรียนจับกลุ่มอภิปรายกรณีศึกษา: "หากต้องการสร้างระบบรดน้ำต้นไม้อัตโนมัติที่ส่งข้อมูลผ่านมือถือได้ ควรเลือกใช้ไมโครคอนโทรลเลอร์ตระกูลใด เพราะเหตุใด?"</p>
+          </div>
+        </section>
+
+        <hr class="section-divider">
+
+        <h2>สรุปเนื้อหา</h2>
+        <p>การเลือกใช้ไมโครคอนโทรลเลอร์ที่ถูกต้อง ไม่ใช่การเลือกตัวที่แรงที่สุด แต่คือการเลือกตัวที่ <strong>"เหมาะสมที่สุด"</strong> กับงาน ทั้งในด้านความสามารถ ราคา และการสนับสนุนเครื่องมือพัฒนา การเริ่มต้นจากการวิเคราะห์ความต้องการที่ชัดเจนและสืบค้นข้อมูลจาก Datasheet จะช่วยให้การออกแบบระบบอินเตอร์เฟซประสบความสำเร็จ</p>
 
         <!-- Lesson Navigation -->
         <div class="lesson-nav">
