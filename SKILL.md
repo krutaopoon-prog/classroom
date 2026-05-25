@@ -51,8 +51,12 @@ https://[username].github.io/[repo]/subjects/electronics1/chapter1/sim.html
 
 | subject-id | Thai name | Chapters |
 |---|---|---|
-| electronics1 | อิเล็กทรอนิกส์เบื้องต้น | — |
-| digital-circuit | วงจรดิจิทัล | — |
+| computer-network | เครือข่ายคอมพิวเตอร์ | — |
+| basic-interface | อินเตอร์เฟซเบื้องต้น | — |
+| embedded-systems | สมองกลฝังตัว | — |
+| electronics1 | งานไฟฟ้าและอิเล็กทรอนิกส์เบื้องต้น | 1 |
+| microcontroller | ไมโครคอนโทรลเลอร์ | — |
+| interface-techniques | เทคนิคการอินเตอร์เฟซ | — |
 
 *(add a row each time a new subject is created)*
 
