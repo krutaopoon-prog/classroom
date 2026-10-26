@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>เข้าห้องเรียนสด</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#2a2733;--soft:#5d5866;--line:#e3dccd;--paper:#fffdf8;--bg:#f4efe4;--orange:#e8742c;--red:#d6455d}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;display:grid;place-items:center;background:var(--bg);color:var(--ink);font:18px/1.5 Sarabun,system-ui,sans-serif;padding:16px}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:24px;width:min(420px,100%);text-align:center;box-shadow:0 10px 30px rgba(0,0,0,.08)}
+h1{font-size:24px;margin:0 0 6px}
+p{color:var(--soft);margin:0 0 16px}
+input{width:100%;font:700 44px/1.2 ui-monospace,monospace;letter-spacing:.3em;text-align:center;padding:10px;border:3px solid var(--line);border-radius:14px}
+input:focus{outline:none;border-color:var(--orange)}
+button{margin-top:14px;width:100%;font:inherit;font-weight:700;font-size:20px;border:0;border-radius:14px;padding:14px;background:var(--red);color:#fff;cursor:pointer}
+.go{display:block;margin-bottom:16px;padding:16px;border-radius:14px;background:var(--red);color:#fff;font-weight:700;text-decoration:none}
+#who{font-size:15px;margin-top:14px;color:var(--soft)}
+#who button{width:auto;margin:0;padding:2px 10px;font-size:14px;background:#efe8da;color:var(--ink)}
+</style>
+</head>
+<body>
+<main class="card">
+    <h1>🔴 เข้าห้องเรียนสด</h1>
+    <div id="live"></div>
+    <p>พิมพ์รหัส 4 หลักที่ขึ้นบนจอครู</p>
+    <input id="code" inputmode="numeric" maxlength="4" autocomplete="off" aria-label="รหัสห้อง">
+    <button type="button" id="go">เข้าห้องเรียน</button>
+    <div id="who"></div>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script src="config.js"></script>
+<script>window.CLASSROOM_BASE = location.href.replace(/[^/]*$/, '').split('?')[0];</script>
+<script src="identity.js"></script>
+<script>
+(function () {
+    const C = window.Classroom, $ = s => document.querySelector(s);
+    const go = s => { location.href = s.page + (s.page.includes('?') ? '&' : '?') + 'live=' + encodeURIComponent(s.code); };
+    function who() {
+        const m = C.me();
+        $('#who').innerHTML = m ? `${C.esc(m.name)} · เลขที่ ${C.esc(m.no)} · ${C.esc(m.room)} <button type="button" id="forget">ไม่ใช่ฉัน</button>` : '';
+        const f = $('#forget'); if (f) f.addEventListener('click', () => { C.forget(); who(); });
+    }
+    async function join() {
+        const code = $('#code').value.replace(/\D/g, '');
+        if (code.length !== 4) { C.toast('ใส่รหัส 4 หลัก', 'bad'); return; }
+        try { await C.ensureStudent(); go(await C.rpc('join_session', { p_code: code, p_token: C.token() })); }
+        catch (e) { if (e.message !== 'CANCELLED') C.toast(C.errText(e), 'bad'); who(); }
+    }
+    $('#go').addEventListener('click', join);
+    $('#code').addEventListener('keydown', e => { if (e.key === 'Enter') join(); });
+    const pre = new URLSearchParams(location.search).get('c'); if (pre) $('#code').value = pre;
+    who();
+    if (C.token()) C.rpc('my_live_session', { p_token: C.token() }).then(s => {
+        if (s) { $('#live').innerHTML = '<a class="go" href="#">🔴 ครูกำลังสอนสด — กดเข้าห้องเรียน</a>'; $('#live a').addEventListener('click', e => { e.preventDefault(); go(s); }); }
+    }).catch(() => {});
+})();
+</script>
+</body>
+</html>

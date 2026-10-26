@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>แดชบอร์ดครู ห้องเรียนสด</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#2a2733;--soft:#5d5866;--line:#e3dccd;--paper:#fffdf8;--bg:#f4efe4;--orange:#e8742c;--red:#d6455d;--green:#2e9b57;--blue:#3b6fd4;--sun:#f7b733}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 Sarabun,system-ui,sans-serif}
+header{background:var(--paper);border-bottom:1px solid var(--line);padding:12px 16px;display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between}
+header h1{font-size:20px;margin:0}
+main{max-width:1180px;margin:0 auto;padding:16px}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:16px 18px;margin-bottom:14px}
+.tabs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px}
+.tabs button{font:inherit;font-weight:600;border:1px solid var(--line);background:var(--paper);border-radius:999px;padding:7px 16px;cursor:pointer}
+.tabs button.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.btn{font:inherit;font-weight:600;border:0;border-radius:10px;padding:8px 16px;cursor:pointer;background:var(--orange);color:#fff}
+.btn.ghost{background:#efe8da;color:var(--ink)}
+.btn.red{background:var(--red)}
+.btn.small{padding:4px 10px;font-size:14px}
+input,select,textarea{font:inherit;padding:8px 10px;border:1px solid #d9d2c3;border-radius:10px;background:#fff;color:inherit}
+textarea{width:100%;min-height:180px;font-family:ui-monospace,monospace;font-size:14px}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:8px 0}
+.muted{color:var(--soft)}
+.ok{color:var(--green)}.bad{color:var(--red)}
+.tbl-wrap{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:15px}
+th,td{border-bottom:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:top}
+th{background:#f6f0e4;position:sticky;top:0}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
+tr.click{cursor:pointer}tr.click:hover{background:#fbf6ea}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin:10px 0}
+.stat{background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px 14px}
+.stat b{display:block;font-size:26px}
+.bar{height:10px;background:#efe8da;border-radius:6px;overflow:hidden;min-width:80px}.bar i{display:block;height:100%;background:var(--blue)}
+.bar.post i{background:var(--green)}
+.low{background:#fdecef}
+.pill{display:inline-block;border-radius:999px;padding:0 8px;font-size:13px;background:#efe8da}
+.pill.in{background:#c9ecd6}
+#login{max-width:440px;margin:40px auto}
+.hide{display:none!important}
+</style>
+</head>
+<body>
+<header>
+    <h1>📊 แดชบอร์ดครู · ห้องเรียนสด</h1>
+    <div class="row" style="margin:0"><span id="who" class="muted"></span><button class="btn ghost small hide" id="logout" type="button">ออกจากระบบ</button></div>
+</header>
+<main>
+    <section class="card hide" id="login">
+        <h2 style="margin-top:0">เข้าสู่ระบบครู</h2>
+        <p class="muted">ระบบจะส่งลิงก์เข้าสู่ระบบไปที่อีเมล กดลิงก์ในอีเมลแล้วจะกลับมาหน้านี้ (ไม่ต้องใช้รหัสผ่าน)</p>
+        <div class="row"><input id="email" type="email" style="flex:1" placeholder="อีเมลครู" autocomplete="email"></div>
+        <div class="row"><button class="btn" id="sendLink" type="button">ส่งลิงก์เข้าสู่ระบบ</button></div>
+        <div id="loginMsg" class="muted"></div>
+    </section>
+
+    <section id="app" class="hide">
+        <nav class="tabs" id="tabs">
+            <button type="button" data-t="rooms" class="on">👥 ห้องและรายชื่อ</button>
+            <button type="button" data-t="quiz">📝 ก่อน/หลังเรียน</button>
+            <button type="button" data-t="live">🔴 คาบสด</button>
+            <button type="button" data-t="self">📖 ทบทวนเอง</button>
+            <button type="button" data-t="stars">⭐ ดาว</button>
+        </nav>
+        <div id="view"></div>
+    </section>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script src="config.js"></script>
+<script>window.CLASSROOM_BASE = location.href.replace(/[^/]*$/, '');</script>
+<script src="identity.js"></script>
+<script>
+(function () {
+    'use strict';
+    const C = window.Classroom, esc = C.esc;
+    const $ = s => document.querySelector(s);
+    const COURSES = { dec: 'อุปกรณ์และวงจรอิเล็กทรอนิกส์', bee: 'ไฟฟ้าและอิเล็กทรอนิกส์เบื้องต้น', mcu: 'ไมโครคอนโทรลเลอร์', epj: 'โครงการอิเล็กทรอนิกส์' };
+    const cname = c => COURSES[c] ? `${COURSES[c]} (${c})` : c;
+    const fmt = t => t ? new Date(t).toLocaleString('th-TH', { dateStyle: 'medium', timeStyle: 'short' }) : '';
+    const short = n => String(n || '').replace(/^(นางสาว|นาย|นาง|เด็กชาย|เด็กหญิง)\s*/, '');
+    let sb, rooms = [];
+
+    if (!C.ready) { document.body.innerHTML = '<main><div class="card">ยังไม่ได้ตั้งค่า config.js</div></main>'; return; }
+    sb = C.sb();
+
+    /* ---------- ล็อกอิน ---------- */
+    const next = new URLSearchParams(location.search).get('next');
+    async function boot() {
+        const { data } = await sb.auth.getSession();
+        if (!data.session) { $('#login').classList.remove('hide'); $('#email').value = 'krutaopoon@uttc.ac.th'; return; }
+        const ok = await C.rpc('is_teacher').catch(() => false);
+        $('#who').textContent = data.session.user.email;
+        $('#logout').classList.remove('hide');
+        if (!ok) { $('#login').classList.remove('hide'); $('#loginMsg').innerHTML = '<span class="bad">บัญชีนี้ไม่มีสิทธิ์ครู</span>'; return; }
+        if (next && /^https?:\/\/(krutaopoon-prog\.github\.io|127\.0\.0\.1|localhost)[:/]/.test(next)) { location.replace(next); return; }
+        $('#app').classList.remove('hide');
+        await loadRooms();
+        show('rooms');
+    }
+    $('#sendLink').addEventListener('click', async () => {
+        const email = $('#email').value.trim();
+        if (!email) return;
+        $('#loginMsg').textContent = 'กำลังส่ง…';
+        const { error } = await sb.auth.signInWithOtp({ email, options: { shouldCreateUser: false, emailRedirectTo: location.href } });
+        $('#loginMsg').innerHTML = error ? `<span class="bad">ส่งไม่สำเร็จ: ${esc(error.message)}</span>` : '<span class="ok">ส่งลิงก์แล้ว เปิดอีเมลแล้วกดลิงก์ (ลองดูในจดหมายขยะด้วย)</span>';
+    });
+    $('#logout').addEventListener('click', async () => { await sb.auth.signOut(); location.href = location.pathname; });
+    sb.auth.onAuthStateChange(ev => { if (ev === 'SIGNED_IN' && $('#app').classList.contains('hide')) boot(); });
+
+    /* ---------- แท็บ ---------- */
+    $('#tabs').addEventListener('click', e => { const b = e.target.closest('[data-t]'); if (b) show(b.dataset.t); });
+    function show(t) {
+        document.querySelectorAll('#tabs button').forEach(b => b.classList.toggle('on', b.dataset.t === t));
+        ({ rooms: viewRooms, quiz: viewQuiz, live: viewLive, self: viewSelf, stars: viewStars })[t]();
+    }
+    async function loadRooms() {
+        const { data } = await sb.from('rooms').select('id,name').order('name');
+        rooms = data || [];
+    }
+    const roomOpts = sel => rooms.map(r => `<option value="${r.id}" ${r.id === sel ? 'selected' : ''}>${esc(r.name)}</option>`).join('');
+    async function studentsOf(roomId) {
+        const { data } = await sb.from('students').select('id,no,name').eq('room_id', roomId).order('no');
+        return data || [];
+    }
+    function csv(name, rows) {
+        const body = rows.map(r => r.map(v => `"${String(v == null ? '' : v).replace(/"/g, '""')}"`).join(',')).join('\r\n');
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(new Blob(['﻿' + body], { type: 'text/csv;charset=utf-8' }));
+        a.download = name; a.click();
+    }
+
+    /* ---------- ห้องและรายชื่อ ---------- */
+    let curRoom = null;
+    async function viewRooms() {
+        await loadRooms();
+        if (!curRoom && rooms[0]) curRoom = rooms[0].id;
+        const st = curRoom ? await studentsOf(curRoom) : [];
+        $('#view').innerHTML = `<div class="card">
+            <div class="row"><b>ห้อง:</b> <select id="roomSel">${roomOpts(curRoom)}</select>
+                <input id="newRoom" placeholder="ชื่อห้องใหม่ เช่น ปวช.2/1 ชฟ." style="min-width:220px"><button class="btn" id="addRoom" type="button">➕ เพิ่มห้อง</button>
+                ${curRoom ? '<button class="btn ghost small" id="delRoom" type="button">ลบห้องนี้</button>' : ''}</div>
+            </div>
+            ${curRoom ? `<div class="card"><h3 style="margin-top:0">รายชื่อ ${st.length} คน</h3>
+                <p class="muted">วางรายชื่อจาก Excel ได้เลย บรรทัดละคน: <b>เลขที่</b> แล้วตามด้วย <b>ชื่อ-สกุล</b> (เลขที่ซ้ำ = แก้ชื่อเดิม) · นักเรียนยืนยันตัวด้วยชื่อจริงคำแรก</p>
+                <textarea id="paste" placeholder="1	นายสมชาย ใจดี&#10;2	นางสาวสมหญิง รักเรียน"></textarea>
+                <div class="row"><button class="btn" id="saveRoster" type="button">บันทึกรายชื่อ</button><span id="rmsg" class="muted"></span></div>
+                <div class="tbl-wrap" id="rlist"><table><tr><th class="num">เลขที่</th><th>ชื่อ-สกุล</th><th></th></tr>
+                ${st.map(s => `<tr><td class="num">${s.no}</td><td>${esc(s.name)}</td><td><button class="btn ghost small" data-del="${s.id}" type="button">ลบ</button></td></tr>`).join('')}</table></div></div>` : '<div class="card muted">ยังไม่มีห้อง เพิ่มห้องก่อน</div>'}`;
+        $('#roomSel') && $('#roomSel').addEventListener('change', e => { curRoom = e.target.value; viewRooms(); });
+        $('#addRoom').addEventListener('click', async () => {
+            const name = $('#newRoom').value.trim(); if (!name) return;
+            const { data, error } = await sb.from('rooms').insert({ name }).select().single();
+            if (error) return alertMsg(error.message);
+            curRoom = data.id; viewRooms();
+        });
+        const del = $('#delRoom');
+        if (del) del.addEventListener('click', () => confirmBox('ลบห้องนี้ พร้อมรายชื่อ คะแนน และคำตอบทั้งหมดของห้องนี้?', async () => {
+            await sb.from('rooms').delete().eq('id', curRoom); curRoom = null; viewRooms();
+        }));
+        const save = $('#saveRoster');
+        if (save) save.addEventListener('click', async () => {
+            const rows = $('#paste').value.split(/\r?\n/).map(l => l.trim()).filter(Boolean).map(l => {
+                const m = l.match(/^(\d{1,3})[\s\t.,]+(.+)$/);
+                if (!m) return null;
+                const name = m[2].replace(/^\d{5,}[\s\t]+/, '').split('\t')[0].replace(/\s+/g, ' ').trim();
+                return name ? { room_id: curRoom, no: +m[1], name } : null;
+            });
+            const bad = rows.filter(r => !r).length, good = rows.filter(Boolean);
+            if (!good.length) { $('#rmsg').innerHTML = '<span class="bad">อ่านรายชื่อไม่ได้ ตรวจรูปแบบ: เลขที่ ตามด้วยชื่อ</span>'; return; }
+            const { error } = await sb.from('students').upsert(good, { onConflict: 'room_id,no' });
+            if (error) { $('#rmsg').innerHTML = `<span class="bad">${esc(error.message)}</span>`; return; }
+            viewRooms().then(() => { $('#rmsg').innerHTML = `<span class="ok">บันทึก ${good.length} คน</span>${bad ? ` · ข้าม ${bad} บรรทัด` : ''}`; });
+        });
+        const list = $('#rlist');
+        if (list) list.addEventListener('click', e => {
+            const b = e.target.closest('[data-del]'); if (!b) return;
+            confirmBox('ลบนักเรียนคนนี้ (รวมคะแนนและคำตอบ)?', async () => { await sb.from('students').delete().eq('id', b.dataset.del); viewRooms(); });
+        });
+    }
+
+    function confirmBox(msg, fn) {
+        const m = C.modal(`<h3>ยืนยัน</h3><p>${esc(msg)}</p><div class="cls-row"><button class="cls-btn red" data-a="y" type="button">ยืนยัน</button><button class="cls-btn ghost" data-a="n" type="button">ยกเลิก</button></div>`);
+        m.el.addEventListener('click', e => { const b = e.target.closest('[data-a]'); if (!b) return; m.close(); if (b.dataset.a === 'y') fn(); });
+    }
+    const alertMsg = msg => C.toast(msg, 'bad', 4000);
+
+    /* ---------- ก่อน/หลังเรียน ---------- */
+    async function viewQuiz() {
+        const { data: keys } = await sb.from('quiz_keys').select('course,lesson,qid,correct');
+        const combos = {};
+        (keys || []).forEach(k => { (combos[k.course] = combos[k.course] || new Set()).add(k.lesson); });
+        const courses = Object.keys(combos).sort();
+        if (!courses.length) { $('#view').innerHTML = '<div class="card muted">ยังไม่มีเฉลยแบบทดสอบในระบบ (รัน push-keys.mjs)</div>'; return; }
+        $('#view').innerHTML = `<div class="card"><div class="row">
+            <select id="qc">${courses.map(c => `<option value="${c}">${esc(cname(c))}</option>`).join('')}</select>
+            <select id="ql"></select><select id="qr">${roomOpts(curRoom)}</select>
+            <button class="btn ghost" id="qcsv" type="button">⬇ CSV</button></div>
+            <p class="muted" style="margin:0">ก่อนเรียน = ทำครั้งแรก · หลังเรียน = ทำครั้งล่าสุด</p></div><div id="qout"></div>`;
+        const fillL = () => { $('#ql').innerHTML = [...combos[$('#qc').value]].sort().map(l => `<option>${l}</option>`).join(''); };
+        fillL();
+        ['#qc', '#ql', '#qr'].forEach(s => $(s).addEventListener('change', () => { if (s === '#qc') fillL(); if (s === '#qr') curRoom = $('#qr').value; render(); }));
+        let last = [];
+        $('#qcsv').addEventListener('click', () => csv(`คะแนน-${$('#qc').value}-${$('#ql').value}.csv`, last));
+        async function render() {
+            const course = $('#qc').value, lesson = $('#ql').value, room = $('#qr').value;
+            if (!room) { $('#qout').innerHTML = '<div class="card muted">เลือกห้อง</div>'; return; }
+            const st = await studentsOf(room);
+            const { data: at } = await sb.from('quiz_attempts').select('student_id,mode,score,total,marks,submitted_at')
+                .eq('course', course).eq('lesson', lesson).in('student_id', st.map(s => s.id)).order('submitted_at');
+            const qids = (keys || []).filter(k => k.course === course && k.lesson === lesson).map(k => k.qid)
+                .sort((a, b) => (+a.replace(/\D/g, '')) - (+b.replace(/\D/g, '')));
+            const by = {};
+            (at || []).forEach(a => { const x = by[a.student_id] = by[a.student_id] || { pre: [], post: [] }; x[a.mode].push(a); });
+            const rows = st.map(s => {
+                const x = by[s.id] || { pre: [], post: [] };
+                const pre = x.pre[0] || null, post = x.post[x.post.length - 1] || null;
+                return { s, pre, post, n: x.pre.length + x.post.length, gain: pre && post ? post.score - pre.score : null };
+            });
+            const both = rows.filter(r => r.gain != null);
+            const avg = a => a.length ? (a.reduce((p, c) => p + c, 0) / a.length).toFixed(2) : '–';
+            const total = qids.length || 20;
+            const pct = (mode, q) => {
+                const list = rows.map(r => r[mode]).filter(Boolean);
+                return list.length ? Math.round(list.filter(a => a.marks[q] === '✓').length / list.length * 100) : null;
+            };
+            last = [['เลขที่', 'ชื่อ-สกุล', 'ก่อนเรียน', 'หลังเรียน', 'พัฒนาการ', 'จำนวนครั้งที่ทำ']]
+                .concat(rows.map(r => [r.s.no, r.s.name, r.pre ? r.pre.score : '', r.post ? r.post.score : '', r.gain == null ? '' : r.gain, r.n]));
+            $('#qout').innerHTML = `<div class="card"><div class="stats">
+                <div class="stat"><span class="muted">ทำก่อนเรียน</span><b>${rows.filter(r => r.pre).length}/${st.length}</b></div>
+                <div class="stat"><span class="muted">ทำหลังเรียน</span><b>${rows.filter(r => r.post).length}/${st.length}</b></div>
+                <div class="stat"><span class="muted">เฉลี่ยก่อน</span><b>${avg(rows.filter(r => r.pre).map(r => r.pre.score))}</b></div>
+                <div class="stat"><span class="muted">เฉลี่ยหลัง</span><b>${avg(rows.filter(r => r.post).map(r => r.post.score))}</b></div>
+                <div class="stat"><span class="muted">พัฒนาการเฉลี่ย</span><b>${both.length ? '+' + avg(both.map(r => r.gain)) : '–'}</b></div>
+                <div class="stat"><span class="muted">คะแนนเพิ่มขึ้น</span><b>${both.length ? Math.round(both.filter(r => r.gain > 0).length / both.length * 100) + '%' : '–'}</b></div></div>
+                <div class="tbl-wrap"><table><tr><th class="num">เลขที่</th><th>ชื่อ-สกุล</th><th class="num">ก่อน</th><th class="num">หลัง</th><th class="num">พัฒนาการ</th><th class="num">ทำ (ครั้ง)</th></tr>
+                ${rows.map(r => `<tr><td class="num">${r.s.no}</td><td>${esc(r.s.name)}</td><td class="num">${r.pre ? r.pre.score : '–'}</td><td class="num">${r.post ? r.post.score : '–'}</td>
+                    <td class="num ${r.gain > 0 ? 'ok' : r.gain < 0 ? 'bad' : ''}">${r.gain == null ? '' : (r.gain > 0 ? '+' : '') + r.gain}</td><td class="num">${r.n || ''}</td></tr>`).join('')}</table></div></div>
+                <div class="card"><h3 style="margin-top:0">% ตอบถูกรายข้อ (เต็ม ${total} ข้อ)</h3><p class="muted">แถวสีชมพู = หลังเรียนยังถูกไม่ถึง 50% ควรสอนซ้ำ</p>
+                <div class="tbl-wrap"><table><tr><th>ข้อ</th><th>ก่อนเรียน</th><th></th><th>หลังเรียน</th><th></th></tr>
+                ${qids.map(q => { const a = pct('pre', q), b = pct('post', q); return `<tr class="${b != null && b < 50 ? 'low' : ''}"><td>${q.replace('q', '')}</td>
+                    <td class="num">${a == null ? '–' : a + '%'}</td><td><div class="bar"><i style="width:${a || 0}%"></i></div></td>
+                    <td class="num">${b == null ? '–' : b + '%'}</td><td><div class="bar post"><i style="width:${b || 0}%"></i></div></td></tr>`; }).join('')}</table></div></div>`;
+        }
+        render();
+    }
+
+    /* ---------- คาบสด ---------- */
+    async function viewLive() {
+        const { data: ss } = await sb.from('sessions').select('id,code,course,lesson,room_id,created_at,ended_at').order('created_at', { ascending: false }).limit(60);
+        const ids = (ss || []).map(s => s.id);
+        const { data: mem } = ids.length ? await sb.from('session_members').select('session_id').in('session_id', ids) : { data: [] };
+        const cnt = {}; (mem || []).forEach(m => { cnt[m.session_id] = (cnt[m.session_id] || 0) + 1; });
+        const rn = id => (rooms.find(r => r.id === id) || {}).name || '';
+        $('#view').innerHTML = `<div class="card"><h3 style="margin-top:0">คาบสดล่าสุด</h3><div class="tbl-wrap"><table>
+            <tr><th>วันเวลา</th><th>ห้อง</th><th>วิชา</th><th>สัปดาห์</th><th>รหัส</th><th class="num">เข้าเรียน</th><th></th></tr>
+            ${(ss || []).map(s => `<tr class="click" data-s="${s.id}"><td>${fmt(s.created_at)}</td><td>${esc(rn(s.room_id))}</td><td>${esc(cname(s.course))}</td><td>${esc(s.lesson)}</td>
+                <td>${esc(s.code)}</td><td class="num">${cnt[s.id] || 0}</td><td>${s.ended_at ? '' : '<span class="pill in">กำลังสอน</span>'}</td></tr>`).join('') || '<tr><td colspan="7" class="muted">ยังไม่มีคาบสด</td></tr>'}
+            </table></div></div><div id="lout"></div>`;
+        $('#view').querySelectorAll('[data-s]').forEach(tr => tr.addEventListener('click', () => liveDetail((ss || []).find(s => s.id === tr.dataset.s))));
+    }
+    async function liveDetail(s) {
+        const [st, { data: mem }, { data: state }, { data: ans }] = await Promise.all([
+            studentsOf(s.room_id),
+            sb.from('session_members').select('student_id,joined_at').eq('session_id', s.id),
+            sb.from('item_state').select('ref,status').eq('session_id', s.id),
+            sb.from('answers').select('student_id,ref,correct').eq('session_id', s.id)
+        ]);
+        const refs = (state || []).map(x => x.ref);
+        const { data: its } = refs.length ? await sb.from('items').select('ref,kind,prompt').in('ref', refs) : { data: [] };
+        const present = new Set((mem || []).map(m => m.student_id));
+        const per = {};
+        (ans || []).forEach(a => { const x = per[a.ref] = per[a.ref] || { n: 0, ok: 0, graded: 0 }; x.n++; if (a.correct != null) { x.graded++; if (a.correct) x.ok++; } });
+        const ansBy = {}; (ans || []).forEach(a => { ansBy[a.student_id] = (ansBy[a.student_id] || 0) + 1; });
+        const rows = [['เลขที่', 'ชื่อ-สกุล', 'เข้าเรียน', 'จำนวนคำตอบ']].concat(st.map(x => [x.no, x.name, present.has(x.id) ? 'มา' : 'ไม่ได้เข้า', ansBy[x.id] || 0]));
+        $('#lout').innerHTML = `<div class="card"><div class="row"><h3 style="margin:0">${esc(fmt(s.created_at))} · รหัส ${esc(s.code)}</h3><button class="btn ghost small" id="lcsv" type="button">⬇ CSV เข้าเรียน</button></div>
+            <p>เข้าเรียน <b>${present.size}</b>/${st.length} คน</p>
+            <div class="row">${st.map(x => `<span class="pill ${present.has(x.id) ? 'in' : ''}" title="${esc(x.name)}">${x.no}. ${esc(short(x.name).split(' ')[0])}</span>`).join('')}</div>
+            <h3>กิจกรรม</h3><div class="tbl-wrap"><table><tr><th>กิจกรรม</th><th>ชนิด</th><th class="num">ตอบ</th><th class="num">ถูก</th></tr>
+            ${(its || []).map(i => { const x = per[i.ref] || { n: 0, ok: 0, graded: 0 }; return `<tr><td>${esc(i.prompt || i.ref)}</td><td>${esc(i.kind)}</td><td class="num">${x.n}</td><td class="num">${x.graded ? Math.round(x.ok / x.graded * 100) + '%' : '–'}</td></tr>`; }).join('')}
+            </table></div></div>`;
+        $('#lcsv').addEventListener('click', () => csv(`เข้าเรียน-${s.course}-${s.lesson}-${s.created_at.slice(0, 10)}.csv`, rows));
+        $('#lout').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    /* ---------- ทบทวนเอง ---------- */
+    async function viewSelf() {
+        $('#view').innerHTML = `<div class="card"><div class="row"><select id="sr">${roomOpts(curRoom)}</select><input id="sl" placeholder="วิชา/สัปดาห์ เช่น dec/w02" value="dec/w02"><button class="btn" id="sgo" type="button">ดู</button></div></div><div id="sout"></div>`;
+        const go = async () => {
+            curRoom = $('#sr').value;
+            const [course, lesson] = $('#sl').value.trim().split('/');
+            const st = await studentsOf(curRoom), ids = st.map(s => s.id);
+            const [{ data: pr }, { data: an }] = await Promise.all([
+                sb.from('progress').select('student_id,max_slide,total,seen,updated_at').eq('course', course).eq('lesson', lesson).in('student_id', ids),
+                sb.from('answers').select('student_id,correct').is('session_id', null).like('ref', `${course}/${lesson}/%`).in('student_id', ids)
+            ]);
+            const P = {}; (pr || []).forEach(p => { P[p.student_id] = p; });
+            const A = {}; (an || []).forEach(a => { const x = A[a.student_id] = A[a.student_id] || { n: 0, ok: 0 }; x.n++; if (a.correct) x.ok++; });
+            $('#sout').innerHTML = `<div class="card"><div class="tbl-wrap"><table><tr><th class="num">เลขที่</th><th>ชื่อ-สกุล</th><th>เปิดสไลด์</th><th class="num">ตอบกิจกรรม</th><th class="num">ถูก</th><th>ล่าสุด</th></tr>
+                ${st.map(s => { const p = P[s.id], a = A[s.id]; const pc = p && p.total ? Math.round(p.seen.length / p.total * 100) : 0;
+                    return `<tr><td class="num">${s.no}</td><td>${esc(s.name)}</td><td>${p ? `<div class="bar"><i style="width:${pc}%"></i></div> ${p.seen.length}/${p.total} หน้า` : '–'}</td>
+                    <td class="num">${a ? a.n : ''}</td><td class="num">${a ? a.ok : ''}</td><td>${p ? fmt(p.updated_at) : ''}</td></tr>`; }).join('')}</table></div></div>`;
+        };
+        $('#sgo').addEventListener('click', go);
+        if (curRoom) go();
+    }
+
+    /* ---------- ดาว ---------- */
+    async function viewStars() {
+        $('#view').innerHTML = `<div class="card"><div class="row"><select id="tr">${roomOpts(curRoom)}</select>
+            <select id="tc"><option value="">ทุกวิชา</option>${Object.keys(COURSES).map(c => `<option value="${c}">${esc(cname(c))}</option>`).join('')}</select></div></div><div id="tout"></div>`;
+        const go = async () => {
+            curRoom = $('#tr').value;
+            const st = await studentsOf(curRoom);
+            let q = sb.from('stars').select('student_id,n,course').in('student_id', st.map(s => s.id));
+            if ($('#tc').value) q = q.eq('course', $('#tc').value);
+            const { data } = await q;
+            const sum = {}; (data || []).forEach(r => { sum[r.student_id] = (sum[r.student_id] || 0) + r.n; });
+            const list = st.map(s => ({ s, n: sum[s.id] || 0 })).sort((a, b) => b.n - a.n || a.s.no - b.s.no);
+            $('#tout').innerHTML = `<div class="card"><div class="tbl-wrap"><table><tr><th class="num">อันดับ</th><th class="num">เลขที่</th><th>ชื่อ-สกุล</th><th class="num">⭐</th></tr>
+                ${list.map((x, i) => `<tr><td class="num">${x.n ? i + 1 : ''}</td><td class="num">${x.s.no}</td><td>${esc(x.s.name)}</td><td class="num">${x.n}</td></tr>`).join('')}</table></div></div>`;
+        };
+        ['#tr', '#tc'].forEach(s => $(s).addEventListener('change', go));
+        if (curRoom) go();
+    }
+
+    boot();
+})();
+</script>
+</body>
+</html>

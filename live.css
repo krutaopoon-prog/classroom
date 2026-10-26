@@ -1,0 +1,153 @@
+/* ===========================================
+   Live — สไตล์ห้องเรียนสด
+   ภายในสไลด์ใช้ขนาดเวที 1920×1080 · แถบลอยและหน้าต่างใช้ขนาดจอจริง
+   =========================================== */
+
+/* ---------- ภายในสไลด์: ผลบนจอครู ---------- */
+.vote .lv-res { grid-column: 1 / -1; }
+.lv-res { font-size: 26px; line-height: 1.4; }
+.lv-res:empty { display: none; }
+.lv-head { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center; margin: 4px 0 8px; }
+.lv-count { font-weight: 600; color: var(--ink, #2a2733); }
+.lv-st { color: var(--ink-soft, #5d5866); }
+.lv-mini { font: 600 22px/1 var(--font-body, inherit); border: 2px solid var(--line, #d9d2c3); background: #fff; border-radius: 10px; padding: 8px 14px; cursor: pointer; color: var(--ink, #2a2733); }
+.lv-mini:hover { border-color: var(--orange, #e8742c); }
+
+.vote.lv-on .opt { position: relative; overflow: hidden; }
+.vote.lv-on .opt::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: var(--lv-w, 0%); background: rgba(59, 111, 212, .14); transition: width .4s ease; pointer-events: none; }
+.vote.lv-on .opt[data-lv-count]::after { content: attr(data-lv-count); position: absolute; right: 18px; top: 50%; transform: translateY(-50%); font: 700 34px var(--font-mono, monospace); color: var(--blue, #3b6fd4); }
+.vote.lv-on.revealed .opt.right[data-lv-count]::after { content: attr(data-lv-count) ' ✓'; color: var(--green, #2e9b57); }
+
+.lv-bars { display: grid; gap: 8px; }
+.lv-row { display: grid; grid-template-columns: 90px 1fr 60px; gap: 12px; align-items: center; }
+.lv-bl { font-weight: 700; }
+.lv-bt { height: 30px; background: #efe8da; border-radius: 8px; overflow: hidden; }
+.lv-bt i { display: block; height: 100%; background: var(--blue, #3b6fd4); transition: width .4s ease; }
+.lv-row.right .lv-bt i { background: var(--green, #2e9b57); }
+
+.lv-sum { margin-bottom: 8px; }
+.lv-chips { display: flex; flex-wrap: wrap; gap: 8px; max-height: 300px; overflow: auto; }
+.lv-chip { display: inline-flex; gap: 8px; align-items: center; background: #fff; border: 2px solid var(--line, #d9d2c3); border-radius: 999px; padding: 4px 14px; font: 600 26px var(--font-mono, monospace); }
+.lv-chip.ok { border-color: var(--green, #2e9b57); background: #e7f5ec; }
+.lv-chip.bad { border-color: #e7a2ae; }
+.lv-nm { font: 500 20px var(--font-body, inherit); color: var(--ink-soft, #5d5866); }
+.lv-tools { display: inline-flex; gap: 2px; }
+.lv-tools button { border: 0; background: none; cursor: pointer; font-size: 20px; padding: 2px; opacity: .55; }
+.lv-tools button:hover { opacity: 1; }
+
+.lv-cloud { text-align: center; line-height: 1.15; padding: 10px; max-height: 360px; overflow: hidden; }
+.lv-cloud span { display: inline-block; margin: 4px 12px; font-weight: 700; }
+.lv-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 10px; max-height: 380px; overflow: auto; }
+.lv-card { background: #fff; border: 2px solid var(--line, #d9d2c3); border-radius: 14px; padding: 10px 14px; font-size: 24px; }
+.lv-card.ok { border-color: var(--green, #2e9b57); }
+.lv-gal { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; max-height: 420px; overflow: auto; }
+.lv-th { position: relative; background: #fff; border: 2px solid var(--line, #d9d2c3); border-radius: 12px; overflow: hidden; cursor: zoom-in; aspect-ratio: 16 / 9; }
+.lv-th svg, .lv-th img { width: 100%; height: 100%; object-fit: contain; display: block; }
+.lv-th .lv-nm { position: absolute; left: 6px; bottom: 4px; background: rgba(255, 255, 255, .85); border-radius: 6px; padding: 0 6px; }
+.lv-th .lv-tools { position: absolute; right: 4px; top: 4px; background: rgba(255, 255, 255, .85); border-radius: 8px; }
+.lv-overlay-draw { position: absolute; inset: 0; z-index: 75; cursor: zoom-out; }
+.lv-overlay-draw svg { width: 100%; height: 100%; }
+.lv-ov-cap { position: absolute; left: 50%; bottom: 30px; transform: translateX(-50%); background: #2a2733; color: #fff; font-size: 26px; border-radius: 12px; padding: 8px 20px; }
+
+/* ---------- ภายในสไลด์: ช่องตอบของนักเรียน ---------- */
+.lv-w { margin-top: 12px; }
+.lv-stu { font-size: 34px; }
+.lv-in { display: flex; gap: 14px; align-items: center; flex-wrap: wrap; }
+.lv-in input { font: 500 40px var(--font-body, inherit); padding: 12px 20px; border: 3px solid var(--line, #d9d2c3); border-radius: 16px; width: 520px; max-width: 100%; background: #fff; color: var(--ink, #2a2733); }
+.lv-k-number .lv-in input { width: 320px; font-family: var(--font-mono, monospace); }
+.lv-in input:focus { outline: none; border-color: var(--orange, #e8742c); }
+.lv-unit { font-weight: 600; }
+.lv-send { font: 700 36px var(--font-display, inherit); background: var(--orange, #e8742c); color: #fff; border: 0; border-radius: 16px; padding: 14px 30px; cursor: pointer; }
+.lv-tf { display: flex; gap: 22px; flex-wrap: wrap; }
+.lv-opt { font: 600 38px var(--font-body, inherit); background: #fff; border: 3px solid var(--line, #d9d2c3); border-radius: 18px; padding: 16px 40px; cursor: pointer; color: var(--ink, #2a2733); }
+.lv-opt.picked { border-color: var(--blue, #3b6fd4); background: var(--blue-soft, #e5edfb); }
+.lv-msg { font-size: 30px; margin-top: 10px; min-height: 1.3em; }
+.vote .lv-vmsg { grid-column: 1 / -1; margin: 0; }
+.lv-closed .lv-stu { opacity: .55; }
+.lv-teacher .lv-stu { display: none; }
+
+/* ฝั่งนักเรียน: ซ่อนปุ่มของครู */
+.lv-stu-live .vote .reveal,
+.lv-student .timer .tm-btns,
+.lv-student .picker,
+.lv-student [data-teacher],
+.lv-student .sx-ctl button[data-a="st"] { display: none !important; }
+.lv-drawing .slide.active { filter: none; }
+
+/* ---------- แถบลอย (จอจริง) ---------- */
+.lv-bar { position: fixed; left: 14px; bottom: 14px; z-index: 1200; display: flex; gap: 4px; align-items: center; background: rgba(255, 253, 248, .96); border: 1px solid #e3dccd; border-radius: 14px; padding: 5px; box-shadow: 0 6px 20px rgba(0, 0, 0, .12); font-size: 16px; }
+.lv-bar button, .lv-bar a { border: 0; background: transparent; font: 600 16px/1 inherit; padding: 8px 10px; border-radius: 10px; cursor: pointer; color: #2a2733; text-decoration: none; }
+.lv-bar button:hover, .lv-bar a:hover { background: #efe8da; }
+.lv-bar .lv-start { background: #d6455d; color: #fff; }
+.lv-bar .lv-start:hover { background: #bd3a50; }
+.lv-bar .lv-code { background: #fde7ea; color: #b02a40; font-variant-numeric: tabular-nums; }
+
+.lv-sbar { position: fixed; left: 50%; bottom: 8px; transform: translateX(-50%); z-index: 1200; display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: center; justify-content: center;
+    background: rgba(42, 39, 51, .9); color: #fff; border-radius: 999px; padding: 6px 16px; font-size: 14px; max-width: calc(100vw - 16px); box-shadow: 0 6px 18px rgba(0, 0, 0, .2); }
+.lv-sbar button { font: 600 14px inherit; border: 0; border-radius: 999px; padding: 5px 12px; cursor: pointer; background: #fff; color: #2a2733; }
+.lv-sbar .lv-golive { background: #d6455d; color: #fff; animation: lv-pulse 1.6s ease-in-out infinite; }
+.lv-dot { width: 10px; height: 10px; border-radius: 50%; background: #ff5a6e; display: inline-block; animation: lv-pulse 1.6s ease-in-out infinite; }
+.lv-follow { background: #3b6fd4; border-radius: 999px; padding: 2px 10px; }
+.lv-free { background: #2e9b57; border-radius: 999px; padding: 2px 10px; }
+@keyframes lv-pulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(255, 90, 110, .6); } 50% { box-shadow: 0 0 0 8px rgba(255, 90, 110, 0); } }
+.lv-student .deck-controls { bottom: 52px; }
+
+/* ถามด่วน: แผงครู + แผ่นตอบนักเรียน */
+.lv-quick { position: fixed; right: 14px; bottom: 70px; z-index: 1150; width: min(560px, calc(100vw - 28px)); max-height: 60vh; overflow: auto; background: #fffdf8; border: 2px solid #e8742c; border-radius: 16px; padding: 12px 16px; box-shadow: 0 10px 30px rgba(0, 0, 0, .2); }
+.lv-quick .lv-res { font-size: 17px; }
+.lv-quick .lv-mini { font-size: 15px; padding: 6px 10px; }
+.lv-quick .lv-row { grid-template-columns: 50px 1fr 36px; }
+.lv-quick .lv-bt { height: 20px; }
+.lv-quick .lv-chip, .lv-quick .lv-card { font-size: 16px; }
+.lv-quick .lv-nm { font-size: 13px; }
+.lv-quick .lv-cloud span { margin: 2px 6px; }
+.lv-quick .lv-cloud { max-height: 260px; }
+.lv-quick .lv-gal { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
+.lv-qtitle { font-weight: 700; font-size: 17px; margin-bottom: 8px; display: flex; gap: 10px; align-items: center; justify-content: space-between; }
+.lv-sheet { position: fixed; left: 50%; bottom: 52px; transform: translateX(-50%); z-index: 1150; width: min(560px, calc(100vw - 20px)); background: #fffdf8; border: 3px solid #e8742c; border-radius: 18px; padding: 12px 16px; box-shadow: 0 10px 30px rgba(0, 0, 0, .25); animation: cls-in .25s ease-out; }
+.lv-sheet .lv-stu, .lv-sheet .lv-msg { font-size: 17px; }
+.lv-sheet .lv-in input { font-size: 18px; padding: 8px 12px; width: 220px; border-width: 2px; border-radius: 10px; }
+.lv-sheet .lv-send { font-size: 17px; padding: 9px 18px; border-radius: 10px; }
+.lv-sheet .lv-opt { font-size: 20px; padding: 10px 22px; border-width: 2px; border-radius: 12px; }
+.lv-sheet .lv-abcd .lv-opt { min-width: 64px; }
+.lv-sheet .lv-res { display: none; }
+
+/* หน้าต่างรหัสห้อง */
+.cls-card.lv-codecard { width: min(720px, 100%); text-align: center; }
+.lv-codehint { font-size: 22px; color: #5d5866; }
+.lv-bigcode { font: 800 120px/1.1 ui-monospace, monospace; letter-spacing: .12em; color: #d6455d; margin: 6px 0 10px; }
+.lv-whohead { font-size: 18px; margin-bottom: 6px; }
+.lv-nums { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; }
+.lv-nums span { width: 40px; height: 34px; line-height: 34px; border-radius: 8px; background: #efe8da; color: #8a8494; font: 600 16px ui-monospace, monospace; }
+.lv-nums span.in { background: #c9ecd6; color: #1f6b3c; }
+.lv-nums span.on { background: #2e9b57; color: #fff; }
+.lv-qr { margin-top: 12px; font-size: 15px; color: #5d5866; }
+.lv-qrimg svg { width: 180px; height: 180px; }
+.lv-url { font-size: 12px; word-break: break-all; }
+
+/* อันดับ + สุ่ม */
+.cls-card.lv-rankcard { width: min(620px, 100%); }
+.lv-ranklist { list-style: none; padding: 0; margin: 14px 0 0; }
+.lv-ranklist li { display: grid; grid-template-columns: 56px 1fr auto; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 12px; font-size: 22px; }
+.lv-ranklist li:nth-child(odd) { background: #f6f0e4; }
+.lv-ranklist li.r0 { font-size: 30px; font-weight: 700; background: #fff4d2; }
+.lv-ranklist .md { text-align: center; font-size: 1.2em; }
+.lv-ranklist .st { font-weight: 700; color: #b07a00; }
+.lv-pick { text-align: center; }
+.lv-pickname { font-size: 64px; font-weight: 800; color: #e8742c; margin: 10px 0 18px; min-height: 1.3em; }
+
+/* ---------- ปากกา ---------- */
+.ink-bar { position: fixed; right: 14px; top: 50%; transform: translateY(-50%); z-index: 1250; display: flex; flex-direction: column; gap: 4px; background: rgba(255, 253, 248, .97); border: 1px solid #e3dccd; border-radius: 14px; padding: 6px; box-shadow: 0 6px 20px rgba(0, 0, 0, .15); }
+.ink-bar button { width: 42px; height: 42px; border: 0; background: transparent; border-radius: 10px; cursor: pointer; font-size: 20px; display: grid; place-items: center; }
+.ink-bar button:hover, .ink-bar button.on { background: #efe8da; }
+.ink-bar button i { width: 22px; height: 22px; border-radius: 50%; display: block; }
+.ink-bar .ink-send { width: auto; height: auto; padding: 10px 8px; font: 700 15px inherit; background: #e8742c; color: #fff; writing-mode: horizontal-tb; }
+.ink-bar-answer { top: auto; bottom: 60px; transform: none; flex-direction: row; right: 50%; transform: translateX(50%); }
+
+/* มือถือแนวตั้ง: แนะนำให้หมุนจอ */
+@media (orientation: portrait) and (max-width: 700px) {
+    .lv-student::before { content: '📱 หมุนมือถือเป็นแนวนอนจะเห็นสไลด์ชัดขึ้น'; position: fixed; top: 6px; left: 50%; transform: translateX(-50%); z-index: 1300; background: #fff4d2; color: #2a2733; font-size: 13px; padding: 4px 12px; border-radius: 999px; white-space: nowrap; }
+}
+
+@media print { .lv-bar, .lv-sbar, .lv-quick, .lv-sheet, .ink-bar, .ink-layer, .lv-res, .lv-stu { display: none !important; } }
+.lv-quick .lv-cloud { zoom: .4; max-height: none; }
