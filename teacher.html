@@ -80,7 +80,7 @@ tr.click{cursor:pointer}tr.click:hover{background:#fbf6ea}
     'use strict';
     const C = window.Classroom, esc = C.esc;
     const $ = s => document.querySelector(s);
-    const COURSES = { dec: 'อุปกรณ์และวงจรอิเล็กทรอนิกส์', bee: 'ไฟฟ้าและอิเล็กทรอนิกส์เบื้องต้น', mcu: 'ไมโครคอนโทรลเลอร์', epj: 'โครงการอิเล็กทรอนิกส์' };
+    const COURSES = { dec: 'อุปกรณ์และวงจรอิเล็กทรอนิกส์', bee: 'ไฟฟ้าและอิเล็กทรอนิกส์เบื้องต้น', mcu: 'ไมโครคอนโทรลเลอร์', epj: 'โครงการอิเล็กทรอนิกส์', itf: 'เทคนิคการอินเตอร์เฟซ' };
     const cname = c => COURSES[c] ? `${COURSES[c]} (${c})` : c;
     const fmt = t => t ? new Date(t).toLocaleString('th-TH', { dateStyle: 'medium', timeStyle: 'short' }) : '';
     const short = n => String(n || '').replace(/^(นางสาว|นาย|นาง|เด็กชาย|เด็กหญิง)\s*/, '');
